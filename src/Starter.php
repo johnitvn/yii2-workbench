@@ -25,7 +25,9 @@ class Starter {
                 foreach (new \DirectoryIterator($vendor->getPathname()) as $package) {
                     if ($package->isDir() && $package->getFilename() !== '.' && $package->getFilename() !== '..') {
                         if ($workbench->onlyIncludePackages === null || in_array($vendor->getFilename() . '/' . $package->getFilename(), $workbench->onlyIncludePackages)) {
-                            $this->bootPackage($app, $package->getPathname());
+                            if ($workbench->excludePackages === null || !in_array($vendor->getFilename() . '/' . $package->getFilename(), $workbench->excludePackages)) {
+                                $this->bootPackage($app, $package->getPathname());
+                            }
                         }
                     }
                 }
