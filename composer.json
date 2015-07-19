@@ -1,0 +1,14 @@
+{
+    "name": "johnitvn/yii2-workbench",
+    "require": {
+        "yiisoft/yii2": "~2.0.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "johnitvn\\workbench\\": "src"
+        }
+    },
+    "extra": {
+        "bootstrap": "johnitvn\\workbench\\Bootstrap"
+    }
+}

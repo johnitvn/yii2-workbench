@@ -1,0 +1,9 @@
+<?php
+
+namespace johnitvn\workbench\json\Schema;
+
+/**
+ * @author John Martin <john.itvn@gmail.com>
+ * @since 1.0.0
+ */
+class ValidationException extends \Exception {}

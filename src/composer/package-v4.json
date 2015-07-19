@@ -1,0 +1,249 @@
+{
+    "name": "Package",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name", "description"],
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "target-dir": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "keywords": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "homepage": {
+            "type": "string",
+            "format": "uri"
+        },
+        "version": {
+            "type": "string"
+        },
+        "time": {
+            "type": "string"
+        },
+        "license": {
+            "type": ["string", "array"]
+        },
+        "authors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name"],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "homepage": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "require": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "replace": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "conflict": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "provide": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "require-dev": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "suggest": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "config": {
+            "type": "object",
+            "properties": {
+                "process-timeout": {
+                    "type": "integer"
+                },
+                "use-include-path": {
+                    "type": "boolean"
+                },
+                "preferred-install": {
+                    "type": "string"
+                },
+                "notify-on-install": {
+                    "type": "boolean"
+                },
+                "github-protocols": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "github-oauth": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "vendor-dir": {
+                    "type": "string"
+                },
+                "bin-dir": {
+                    "type": "string"
+                },
+                "cache-dir": {
+                    "type": "string"
+                },
+                "cache-files-dir": {
+                    "type": "string"
+                },
+                "cache-repo-dir": {
+                    "type": "string"
+                },
+                "cache-vcs-dir": {
+                    "type": "string"
+                },
+                "cache-ttl": {
+                    "type": "integer"
+                },
+                "cache-files-ttl": {
+                    "type": "integer"
+                },
+                "cache-files-maxsize": {
+                    "type": ["string", "integer"]
+                },
+                "discard-changes": {
+                    "type": ["string", "boolean"]
+                }
+            }
+        },
+        "extra": {
+            "type": ["object", "array"],
+            "additionalProperties": true
+        },
+        "autoload": {
+            "type": "object",
+            "properties": {
+                "psr-0": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "classmap": {
+                    "type": "array"
+                },
+                "files": {
+                    "type": "array"
+                }
+            }
+        },
+        "repositories": {
+            "type": ["object", "array"],
+            "additionalProperties": true
+        },
+        "minimum-stability": {
+            "type": ["string"]
+        },
+        "bin": {
+            "type": ["array"],
+            "items": {
+                "type": "string"
+            }
+        },
+        "include-path": {
+            "type": ["array"],
+            "items": {
+                "type": "string"
+            }
+        },
+        "scripts": {
+            "type": ["object"],
+            "properties": {
+                "pre-install-cmd": {
+                    "type": ["array", "string"]
+                },
+                "post-install-cmd": {
+                    "type": ["array", "string"]
+                },
+                "pre-update-cmd": {
+                    "type": ["array", "string"]
+                },
+                "post-update-cmd": {
+                    "type": ["array", "string"]
+                },
+                "pre-package-install": {
+                    "type": ["array", "string"]
+                },
+                "post-package-install": {
+                    "type": ["array", "string"]
+                },
+                "pre-package-update": {
+                    "type": ["array", "string"]
+                },
+                "post-package-update": {
+                    "type": ["array", "string"]
+                },
+                "pre-package-uninstall": {
+                    "type": ["array", "string"]
+                },
+                "post-package-uninstall": {
+                    "type": ["array", "string"]
+                },
+                "post-autoload-dump": {
+                    "type": ["array", "string"]
+                }
+            }
+        },
+        "support": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "issues": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "forum": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "wiki": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "irc": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "source": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            }
+        }
+    }
+}

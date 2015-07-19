@@ -1,0 +1,12 @@
+<?php
+namespace {{vendor}}\{{name}};
+
+class Module extends \yii\base\Module {
+
+    public $controllerNamespace = '{{vendor}}\{{name}}\controllers';
+
+    public function init() {
+        parent::init();
+    }
+
+}
