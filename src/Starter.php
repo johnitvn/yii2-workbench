@@ -36,6 +36,7 @@ class Starter {
     }
 
     public function bootPackage($app, $packagePath) {
+        Yii::trace('Workbench boot package ' . $packagePath, 'johnitvn\workbench\Starter::bootPackage');
         $document = new Document();
         if (!$json = @file_get_contents($packagePath . '/composer.json')) {
             //skip
@@ -59,6 +60,7 @@ class Starter {
             } else if (!($bootstrap instanceof BootstrapInterface)) {
                 throw new Exception($bootstrapClass . " must implements yii\base\BootstrapInterface");
             } else {
+                Yii::trace('Boostrap with ' . $bootstrapClass, 'yii\base\Application::bootstrap');
                 $bootstrap->bootstrap($app);
             }
         }
