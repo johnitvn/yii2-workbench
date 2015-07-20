@@ -2,6 +2,7 @@
 
 namespace johnitvn\workbench;
 
+use Yii;
 use johnitvn\workbench\json\Document;
 use yii\base\Exception;
 use yii\base\BootstrapInterface;
@@ -20,14 +21,16 @@ class Starter {
             $workbench = $app->get("workbench");
         }
 
+        if (!file_exists($workbench->workbenchDir)) {
+            return;
+        }
         foreach (new \DirectoryIterator($workbench->workbenchDir) as $vendor) {
             if ($vendor->isDir() && $vendor->getFilename() !== '.' && $vendor->getFilename() !== '..') {
                 foreach (new \DirectoryIterator($vendor->getPathname()) as $package) {
                     if ($package->isDir() && $package->getFilename() !== '.' && $package->getFilename() !== '..') {
-                        if ($workbench->onlyIncludePackages === null || in_array($vendor->getFilename() . '/' . $package->getFilename(), $workbench->onlyIncludePackages)) {
-                            if ($workbench->excludePackages === null || !in_array($vendor->getFilename() . '/' . $package->getFilename(), $workbench->excludePackages)) {
-                                $this->bootPackage($app, $package->getPathname());
-                            }
+                        Yii::trace("Found package:" . $vendor->getFilename() . '/' . $package->getFilename(), "johnitvn\workbench\Starter::start");
+                        if ($this->isIncludePackage($workbench, $vendor, $package)) {
+                            $this->bootPackage($app, $package->getPathname(), $vendor->getFilename() . '/' . $package->getFilename());
                         }
                     }
                 }
@@ -35,8 +38,22 @@ class Starter {
         }
     }
 
-    public function bootPackage($app, $packagePath) {
-        Yii::trace('Workbench boot package ' . $packagePath, 'johnitvn\workbench\Starter::bootPackage');
+    private function isIncludePackage($workbench, $vendor, $package) {
+        $fullname = $vendor->getFilename() . '/' . $package->getFilename();
+        $includes = $workbench->onlyIncludePackages;
+
+
+        if ($includes !== null) {
+            if (!in_array($fullname, $includes)) {
+
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function bootPackage($app, $packagePath, $packageFullName) {
+        Yii::trace('Workbench boot package: ' . $packageFullName, 'johnitvn\workbench\Starter::bootPackage');
         $document = new Document();
         if (!$json = @file_get_contents($packagePath . '/composer.json')) {
             //skip
