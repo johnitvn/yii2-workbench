@@ -31,11 +31,5 @@ class Workbench extends Component {
      * @var array|null Set false for include all packages.
      */
     public $onlyIncludePackages;
-    
-    /**
-     *
-     * @var array|null exclude package 
-     */
-    public $excludePackages;
 
 }
