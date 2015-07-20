@@ -1,5 +1,6 @@
 {
     "name": "{{lower_vendor}}/{{lower_name}}",
+    "type": "yii2-extension",
     "description": "{{lower_name}}",
     "authors": [
         {
