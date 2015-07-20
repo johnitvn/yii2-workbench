@@ -51,6 +51,7 @@ class WorkbenchController extends Controller {
         $process = new ComposerProcess();
         $process->setWorkingDir($workingDir);
         $process->run(['install']);
+        $process->run(['dump-autoload']);
         echo "Done!!!\n";
     }
 
