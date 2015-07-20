@@ -1,6 +1,6 @@
 {
     "name": "johnitvn/yii2-workbench",
-    "description": "",
+    "description": "Yii2 workbench support for yii2 extension development",
     "type": "yii2-extension",
     "license": "Apache-2.0",
     "authors": [
