@@ -8,10 +8,10 @@ use yii\console\Controller;
 use johnitvn\workbench\PackageCreator;
 use johnitvn\workbench\Package;
 use johnitvn\workbench\composer\ComposerProcess;
-use johnitvn\workbench\FileSystem;
-use \DirectoryIterator;
+
 
 /**
+ * Manager workbench package
  * @author John Martin <john.itvn@gmail.com>
  * @since 1.0.0
  */
