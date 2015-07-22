@@ -2,7 +2,7 @@
 
 namespace johnitvn\workbench;
 
-use Yii;
+use johnitvn\jsonquery\JsonDocument;
 
 /**
  * 
@@ -54,6 +54,13 @@ class Package {
     public $email;
 
     /**
+     * The path of workbench workspace
+     * @var string 
+     */
+    public $workingDir;
+    private $composerJsonDocument = false;
+
+    /**
      * Create a new package instance.
      *
      * @param  string  $vendor
@@ -65,6 +72,7 @@ class Package {
     public function __construct(Workbench $workbench, $vendor, $name) {
         $this->name = $name;
         $this->vendor = $vendor;
+        $this->workingDir = $workbench->workingDir;
         $this->email = $workbench->email;
         $this->author = $workbench->author;
         $this->lowerName = static::snake_case($name, '-');
@@ -80,9 +88,32 @@ class Package {
         return $this->lowerVendor . '/' . $this->lowerName;
     }
 
-    public static function snake_case($value, $delimiter = '_') {
-        $replace = '$1' . $delimiter . '$2';
-        return ctype_lower($value) ? $value : strtolower(preg_replace('/(.)([A-Z])/', $replace, $value));
+    /**
+     * Get the fullpath of package
+     * @return string
+     */
+    public function getFullPath() {
+        return $this->workingDir . '/' . $this->getFullName();
+    }
+
+    /**
+     * Get composer json document of this package
+     * @return JsonDocument|null The composer json document or null when can't read composer.json file
+     */
+    public function getComposerJsonDocument() {
+        if ($this->composerJsonDocument === false) {
+            $this->composerJsonDocument = new JsonDocument();
+            if ($json = @file_get_contents($this->getFullPath() . '/composer.json')) {
+                try {
+                    $this->composerJsonDocument->loadData($json);
+                } catch (Exception $ex) {
+                    $this->composerJsonDocument = null;
+                }
+            } else {
+                $this->composerJsonDocument = null;
+            }
+        }
+        return $this->composerJsonDocument;
     }
 
     public function getReplacement() {
@@ -94,6 +125,11 @@ class Package {
             '{{author}}' => $this->author,
             '{{email}}' => $this->email,
         ];
+    }
+
+    private static function snake_case($value, $delimiter = '_') {
+        $replace = '$1' . $delimiter . '$2';
+        return ctype_lower($value) ? $value : strtolower(preg_replace('/(.)([A-Z])/', $replace, $value));
     }
 
 }

@@ -3,12 +3,11 @@
 namespace johnitvn\workbench\controllers;
 
 use Yii;
-use johnitvn\workbench\Workbench;
 use yii\console\Controller;
-use johnitvn\workbench\PackageCreator;
 use johnitvn\workbench\Package;
-use johnitvn\workbench\composer\ComposerProcess;
-
+use johnitvn\workbench\Workbench;
+use johnitvn\workbench\PackageCreator;
+use johnitvn\composerruntime\ComposerProcess;
 
 /**
  * Manager workbench package
@@ -45,13 +44,12 @@ class WorkbenchController extends Controller {
         }
 
         $package = new Package($workbench, $vendorName, $packageName);
-        $packageCreator = new PackageCreator($workbench->workbenchDir);
-        $workingDir = $packageCreator->create($package);
+        //do create package with template
+        (new PackageCreator())->create($package);
 
-        $process = new ComposerProcess();
-        $process->setWorkingDir($workingDir);
-        $process->run(['install']);
-        $process->run(['dump-autoload']);
+        $process = new ComposerProcess($package->getFullPath());
+        $process->run('install');
+        $process->run('dump-autoload');
         echo "Done!!!\n";
     }
 

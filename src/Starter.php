@@ -3,9 +3,12 @@
 namespace johnitvn\workbench;
 
 use Yii;
-use johnitvn\workbench\json\Document;
+use yii\base\Application;
 use yii\base\Exception;
 use yii\base\BootstrapInterface;
+use johnitvn\workbench\Workbench;
+use johnitvn\jsonquery\JsonDocument;
+use Composer\Autoload\ClassLoader;
 
 /**
  *
@@ -14,62 +17,51 @@ use yii\base\BootstrapInterface;
  */
 class Starter {
 
-    public function start($app) {
-        if (!$app->has("workbench")) {
-            $workbench = new Workbench();
-        } else {
-            $workbench = $app->get("workbench");
-        }
+    /**
+     * @param yii\base\Application $app
+     * @return void
+     */
+    public function start(Application $app) {
 
-        if (!file_exists($workbench->workbenchDir)) {
+        // Skip if workbench working dir is not exist
+        if (($workbench = Workbench::getInstance($app)) == null) {
             return;
         }
-        foreach (new \DirectoryIterator($workbench->workbenchDir) as $vendor) {
-            if ($vendor->isDir() && $vendor->getFilename() !== '.' && $vendor->getFilename() !== '..') {
-                foreach (new \DirectoryIterator($vendor->getPathname()) as $package) {
-                    if ($package->isDir() && $package->getFilename() !== '.' && $package->getFilename() !== '..') {
-                        Yii::trace("Found package:" . $vendor->getFilename() . '/' . $package->getFilename(), "johnitvn\workbench\Starter::start");
-                        if ($this->isIncludePackage($workbench, $vendor, $package)) {
-                            $this->bootPackage($app, $package->getPathname(), $vendor->getFilename() . '/' . $package->getFilename());
-                        }
-                    }
-                }
+
+        $finder = new PackageFinder($workbench);
+        $packages = $finder->findAllPackage();
+
+        foreach ($packages as $package) {
+            if ($package->getComposerJsonDocument() == null) {
+                //error on load composer.json
+                continue;
             }
+            $classLoader = $this->autoloadPackage($package);
+            $finder->overidePsr4($classLoader);
+            $this->bootPackage($package, $app);
         }
     }
 
-    private function isIncludePackage($workbench, $vendor, $package) {
-        $fullname = $vendor->getFilename() . '/' . $package->getFilename();
-        $includes = $workbench->onlyIncludePackages;
-
-
-        if ($includes !== null) {
-            if (!in_array($fullname, $includes)) {
-
-                return false;
-            }
-        }
-        return true;
+    /**
+     * Required autoload file of package in workbench workspace
+     * @param string $packagePath
+     * @param JsonDocument $composerJsonDocument
+     * @return ClassLoader
+     */
+    private function autoloadPackage(Package $package) {
+        $vendorDir = $package->getComposerJsonDocument()->getValue("/config/vendor-dir", 'vendor');
+        return require $package->getFullPath() . '/' . $vendorDir . '/autoload.php';
     }
 
-    public function bootPackage($app, $packagePath, $packageFullName) {
-        Yii::trace('Workbench boot package: ' . $packageFullName, 'johnitvn\workbench\Starter::bootPackage');
-        $document = new Document();
-        if (!$json = @file_get_contents($packagePath . '/composer.json')) {
-            //skip
-            return;
-        } else {
-            try {
-                $document->loadData($json);
-            } catch (Exception $ex) {
-                //skip
-                return;
-            }
-        }
-        $vendorDir = $document->getValue("/config/vendor-dir", 'vendor');
-        require $packagePath . '/' . $vendorDir . '/autoload.php';
-
-        $bootstrapClass = $document->getValue("/extra/bootstrap", null);
+    /**
+     * 
+     * @param JsonDocument $composerJsonDocument
+     * @param Application $app
+     * @throws Exception
+     * @return void
+     */
+    private function bootPackage(Package $package, Application $app) {
+        $bootstrapClass = $package->getComposerJsonDocument()->getValue("/extra/bootstrap", null);
         if ($bootstrapClass !== null) {
             $bootstrap = new $bootstrapClass;
             if (!class_exists($bootstrapClass)) {

@@ -11,7 +11,9 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.4"
+        "yiisoft/yii2": "~2.0.4",
+        "johnitvn/composer-runtime": "1.0.0",
+        "johnitvn/json-query": "1.0.2"
     },
     "autoload": {
         "psr-4": {
