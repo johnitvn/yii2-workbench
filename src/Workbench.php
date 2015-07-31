@@ -44,7 +44,11 @@ class Workbench extends Component {
         } else {
             $workbench = $app->get("workbench");
         }
-        $this->workingDir = dirname(dirname(dirname(__DIR__))) . '/workbench';
+        
+        if($workbench->workingDir===null){
+            $workbench->workingDir = dirname(dirname(dirname(__DIR__))) . '/workbench';
+        }
+        
         // If workbench workspace not exist. return null
         if (!file_exists($workbench->workingDir)) {
             return null;
